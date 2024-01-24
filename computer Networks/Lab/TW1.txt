@@ -1,0 +1,44 @@
+Computer Networks:
+
+    Definition: A computer network is a set of interconnected devices, such as computers, servers, routers, switches, and other hardware components, that communicate and share resources with each other. These networks can be wired (using physical cables) or wireless (using radio waves).
+
+    Types of Computer Networks:
+        Local Area Network (LAN): LANs typically cover a small geographical area, such as a home, office, or campus. They are used for connecting devices within a limited space.
+        Wide Area Network (WAN): WANs span a larger geographical area, often connecting devices across cities or countries. The internet itself is a massive WAN.
+        Metropolitan Area Network (MAN): MANs are intermediate in size, connecting devices within a city or metropolitan area.
+        Wireless LAN (WLAN): WLANs use wireless technology (Wi-Fi) to connect devices within a specific area.
+        Virtual Private Network (VPN): VPNs are secure networks that connect remote users or sites to a private network over the internet.
+
+    Functions:
+        Data Sharing: Networks allow devices to share data and resources, like files, printers, and internet connections.
+        Communication: Users can send messages, emails, and engage in video conferencing through network connections.
+        Resource Management: Networks help manage resources efficiently and ensure they are accessible to those who need them.
+        Internet Access: Networks provide access to the World Wide Web and online services.
+
+    Protocols: To facilitate communication between devices on a network, various networking protocols, such as TCP/IP, HTTP, and SMTP, are used. These protocols define the rules and conventions for data transmission and reception.
+
+Physical Media:
+
+    Definition: Physical media, often referred to as transmission media, are the physical materials or pathways through which data is transmitted from one network device to another. Different types of physical media are used in computer networks, depending on factors like distance, bandwidth, and cost.
+
+    Types of Physical Media:
+        Twisted Pair Cable: Commonly used for Ethernet connections, twisted pair cables have pairs of insulated copper wires twisted together.
+        Coaxial Cable: Coaxial cables consist of a central conductor surrounded by insulating material and a shielding layer. They are used in cable TV and some broadband connections.
+        Fiber Optic Cable: Fiber optic cables use thin strands of glass or plastic to transmit data as light pulses. They offer high bandwidth and are used for long-distance, high-speed data transmission.
+        Wireless Media: Wireless networks use radio waves to transmit data, and they do not require physical cables. Examples include Wi-Fi, Bluetooth, and cellular networks.
+
+    Selection Criteria: The choice of physical media depends on various factors, such as the distance data needs to travel, the required bandwidth, the cost, and the environmental conditions. Fiber optic cables are preferred for long-distance and high-speed data transmission, while twisted pair cables are suitable for shorter distances within buildings.
+
+    Transmission Modes: Physical media can support various transmission modes, including simplex (one-way), half-duplex (two-way, but not simultaneously), and full-duplex (two-way and simultaneous) communication.
+
+In summary, computer networks enable communication and resource sharing among interconnected devices. Physical media, including cables and wireless technologies, provide the means to transmit data between these devices. The choice of physical media depends on factors like distance, bandwidth, and cost. Networking protocols play a crucial role in ensuring data is transmitted accurately and efficiently within these networks.
+
+
+nodes = [1, 2, 3, 4]
+    network = Network(nodes)
+
+    network.add_link(1, 2, 1)
+    network.add_link(1, 3, 4)
+    network.add_link(2, 3, 2)
+    network.add_link(2, 4, 5)
+    network.add_link(3, 4, 3)

@@ -1,0 +1,315 @@
+	AREA tw1a,CODE,READONLY
+		ENTRY				;MARK THE FIRST INSTRUCTION EXECUTION
+		MOV R0,#0X0F		;COPY THE VALUE 0X0F INTO R0
+		MOV R1,#0X27		;COPY THE VALUE 0X27 INTO R1
+		MUL R2,R0,R1		;ADD/SUB/MUL R0 AND R1, PLACE RESULT IN R2
+L		B L					;TO TERMINATE PGM NORMALLY USE L B L, TO KEEP IT IN A LOOP
+	END
+
+
+======================================================================================================================
+1b. 
+	AREA tw1b, CODE, READONLY
+		ENTRY
+		MOV R0,#10
+		LDR R1,=FBLOCK
+		LDR R2,=SBLOCK
+GOTO 	LDRH R3,[R1],#1
+		STRH R3,[R2],#1
+		SUBS R0,#1
+		BNE GOTO
+L		B	L
+FBLOCK DCW 0X1234,0X5678,0X9ABC,0XDEF0,0X9876
+	AREA MYDATA,DATA,READWRITE
+SBLOCK DCW 0
+		END
+======================================================================================================================
+2.
+	AREA tw2,CODE,READONLY
+		ENTRY
+		MOV R0,#10
+		MOV R4,#0000
+		LDR R1,=FBLOCK
+		LDR R2,=RESULT
+LOOP	LDRH R3,[R1],#2
+		ADD R4,R4,R3
+		STR R4,[R2]
+		SUBS R0,#1
+		BNE LOOP
+L		B L
+FBLOCK DCW 0X1111,0X2222,0X3333,0X4444,0X5555,0X6666,0X7777,0X8888,0X9999,0XAAAA
+	AREA MYDATA,DATA,READWRITE
+RESULT DCD 0
+		END
+=========================================================================================================================
+3.
+	AREA tw3,CODE,READONLY
+		ENTRY
+		MOV R0,#6
+		MOV R1,R0
+FACT	SUBS R1,#1 ;TO MULTIPLY R0(6) WITH 5,4,3...., DECREMENT R1 BY 1 AND CHECK CMP CONDITION
+		CMP R1,#1	;TO CHK IF R1=1...R1-6=5-1=4!=1 SO GOES TO 
+		BEQ L		;CHECK BRANCH EQUALITY , IF ITS TRUE GO TO LABEL 'L'
+		MUL R3,R0,R1	;MULTIPLY R0,R1 AND STORE PARTIAL RESULT IN R3
+		MOV R0,R3	;STORE R3 IN R0, BCOZ R0 IS AN OPERAND IN MULTIPLICATION
+		BNE FACT	;IF BRANCH NOT EQUAL TO CMP CONDITION, GO TO FACT LABEL
+L		B L
+	END
+========================================================================================================================
+4.
+	AREA tw4,CODE,READONLY
+		ENTRY
+		MOV R6,#6		; COUNT
+		LDR R1,=VALUE	; ARRAY
+		LDR R8,=RESULT	; RESULT MEMORY
+		LDR R2,[R1],#4	; 1ST NO. INTO R2
+LOOP	LDR R4,[R1],#4	; 2ND NO. INTO R4
+		CMP R2,R4		;R2-R4
+		BHI LOOP1		;IF R2>R4
+		MOV R2,R4		;COPY R4 INTO R2
+LOOP1	SUBS R6,R6,#1	;can also write R6,#1 ...DECREMENTING COUNTER BY 1
+		BNE LOOP
+		STR R2,[R8]		;STORING R2 VALUE INTO MEMORY POINTED BY R8
+VALUE DCD 0X11111111,0X44444444,0X22222222,0X66666666,0X33333333,0X55555555,0X88888888
+L		B L
+	AREA MYDATA,DATA,READWRITE
+RESULT DCD 0
+	END
+==========================================================================================================================
+5.
+	AREA tw5,CODE,READONLY
+		ENTRY
+		MOV R0,#0X80000002
+		MOV R1,#0X80000011
+		MOVS R2,R0,LSR #1
+		MOVS R3,R0,LSL #1
+		MOVS R4,R0,ASR #1
+		MOVS R5,R1,ROR #1
+		RRX R6,R0
+		AND R7,R0,R1
+		ORR R8,R0,R1
+		EOR R9,R0,R1
+		BIC R10,R0,R1
+L		B L
+	END
+============================================================================================================================
+6.
+		AREA MCTW5,CODE,READONLY
+			ENTRY					;Mark first instruction to execute
+START       MOV R8,#4
+			LDR R2,=CVALUE
+			LDR R3,=DVALUE
+			
+LOOP0		LDR R1,[R2],#4
+			STR R1,[R3],#4
+			SUBS R8,R8,#1
+			CMP  R8,#0
+			BNE LOOP0
+				  
+START1  	MOV R5,#3
+			MOV R7,#0
+			LDR R1,=DVALUE
+						 
+LOOP    	LDR R2,[R1],#4
+			LDR R3,[R1]
+			CMP R2,R3
+			BLT LOOP2
+			STR R2,[R1],#-4
+			STR R3,[R1]
+			MOV R7,#1
+			ADD R1,#4
+						  
+LOOP2		SUBS R5,R5,#1
+			CMP R5,#0
+			BNE LOOP
+			CMP R7,#0
+			BNE START1
+				  
+		NOP
+		NOP
+		NOP
+		
+CVALUE DCD 0X44444444,0X11111111,0X33333333,0X22222222
+		AREA DATA1,DATA,READWRITE
+DVALUE DCD 0X00000000
+		END
+=====================================================================================================================
+7. led arm 7
+#include<LPC21xx.h>
+unsigned int delay;
+int main()
+{
+	PINSEL1=0x00000000; //configure P0.16 to P0.23 as GPIO
+	IO0DIR=0xFFFFFFFF; //configure P0.16 to P0.23 as OUTPUT....can also give 0x00FF0000, bcoz we r using only 16-23 pins, make only those high(1/F)
+	while(1)
+	{
+		IO0SET=0x00FF0000; //set pins 16-23 of port 0(P0)
+		for(delay=0;delay<100000;delay++);//creates delay for 10000 msec
+		IO0CLR=0x00FF0000; //clears pins 16-23 of port 0(P0)
+		for(delay=0;delay<100000;delay++);
+	}
+}
+===================================================================================================================
+8. Counter
+#include<LPC21xx.h>
+void delay(void);
+unsigned int count;//this is 16 bit data, but v need only 8 bit data
+int main()
+{
+	unsigned int comp=0;
+	PINSEL1=0x00000000;//configure port 0(16-31) as GPIO
+	IO0DIR=0xFFFFFFFF;//configure P0.16 to P0.31 as OUTPUT
+	while(1)
+	{
+		for(count=0;count<=0xFF;count++)//since interested in only 8 bit data,only till 255 v need
+		{
+			comp=(~count);//ensure that after 255, 0 should come...v don't want 256 and so on
+			comp=comp & 0x000000FF;//to fetch lower 8 bit data...v don't need upper 8 bits, so they are anded with 0
+			IO0PIN=(comp <<16);
+			delay();
+		}
+	}
+}
+void delay(void)
+{
+	unsigned int i;
+	for(i=0;i<650;i++);
+}
+====================================================================================================================
+9. Suqare
+
+#include<LPC21xx.h>
+void delay(void);
+int main()
+{
+	PINSEL0=0X00000000; //P0.0-P0.15 AS GPIO
+	PINSEL1=0X00000000; //P0.16-P0.31 AS GPIO
+	IO0DIR=0XFFFFFFFF; //P0.0-P0.31 CONFIGURED AS OUTPUT
+	while(1)
+		{
+			IO0PIN=0x00000000;//IO0PIN IS USED TO OBTAIN STATUS OF PINS
+			delay();
+			IO0PIN=0XFFFFFFFF;
+			delay();
+		}
+	}
+void delay(void)
+{
+	unsigned int i;
+	for(i=0;i<500;i++);
+}
+===================================================================================================================
+10. Triangle
+
+#include<LPC21xx.h>
+int main()
+{
+	unsigned long temp=0x00000000;
+	unsigned int i;
+	IO0DIR=0XFFFFFFFF; //P0.0-P0.31 CONFIGURED AS OUTPUT
+	while(1)
+		{
+			for(i=0;i!=0xFF;i++)
+			{
+				temp=i;
+				temp=temp<<16;
+				IO0PIN=temp;
+			}
+			for(i=0xFF;i!=0;i--)
+		{
+			temp=i;
+			temp=temp<<16;
+			IO0PIN=temp;
+		}
+	}
+}
+=================================================================================================================
+11.Relay
+
+#include <LPC21xx.h>
+unsigned int i;
+int main()
+{
+	IO0DIR=0x00000600; //set P0.10 as output
+	IO0SET=0x00000600; //P0.10-for relay and P0.09 for buzzer is set to HIGH...turning on the relay
+	while(1)
+	{
+		for(i=0;i<1000000;i++);
+		IO0SET=0x00000600; //relay on
+		for(i=0;i<1000000;i++);
+		IO0CLR=0x00000600; //relay off
+	}
+}
+===============================================================================================================
+12. Arduino Led
+
+/*
+  Blink
+
+  Turns an LED on for one second, then off for one second, repeatedly.
+*/
+
+// the setup function runs once when you press reset or power the board
+void setup() {
+  // initialize digital pin LED_BUILTIN as an output.
+  pinMode(LED_BUILTIN, OUTPUT);
+}
+
+// the loop function runs over and over again forever
+void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+  delay(100);                      // wait for a second
+  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+  delay(100);                      // wait for a second
+}
+================================================================================================================
+13.LDR
+//LDR pgm
+//RM3 to RM20
+
+int light_pin=5;
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(light_pin,INPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  int light_data=digitalRead(light_pin);
+  if(light_data==1)
+  {
+    Serial.println("Light not detected!");
+  }
+  else
+  {
+    Serial.println("Light detected!");
+  }
+    delay(1000);
+}
+=================================================================================================================
+14.Buzzer
+//buzzer pgm
+//RM17-RM9
+
+int buzzer_pin=9;
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(buzzer_pin,OUTPUT);
+  Serial.begin(9600);
+  digitalWrite(buzzer_pin,HIGH);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  digitalWrite(buzzer_pin,LOW);
+  Serial.println("Buzzer is ON");
+  delay(1000);
+  digitalWrite(buzzer_pin,HIGH);
+  Serial.println("Buzzer is OFF");
+  delay(1000);
+}
+
+
+
+		 
